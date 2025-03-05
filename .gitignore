@@ -1,0 +1,30 @@
+# Maven target directory
+/target/
+
+# IntelliJ IDEA project files
+/.idea/
+/*.iml
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Spring Boot specific
+/*.jar
+/*.war
+/*.ear
+
+# H2 database files
+*.h2.db
+*.mv.db
+*.trace.db
+
+# Other
+*.class
