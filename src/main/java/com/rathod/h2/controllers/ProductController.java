@@ -28,16 +28,22 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.getAllProduct());
     }
 
+//    @GetMapping("/products/{id}")
+//    public ResponseEntity<Product> getProductById(@PathVariable long id) {
+//        try {
+//            Product product = productService.getProductById(id);
+//            return ResponseEntity.ok(product);
+//        } catch (ProductNotFoundException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
     @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable long id) {
-        try {
-            Product product = productService.getProductById(id);
-            return ResponseEntity.ok(product);
-        } catch (ProductNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        Product product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping("/products")
