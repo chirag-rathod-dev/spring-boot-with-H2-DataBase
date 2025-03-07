@@ -4,25 +4,24 @@ import com.rathod.h2.entities.Product;
 import com.rathod.h2.exceptions.ProductNotFoundException;
 import com.rathod.h2.exceptions.ResourceNotFoundException;
 import com.rathod.h2.repositories.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 /**
- * @author Chirag-scaletech
+ * @author Chirag
  */
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
-
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public Product createProduct(Product product) {
@@ -31,37 +30,35 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Product product) {
-        Optional<Product> productDb = this.productRepository.findById(product.getId());
-
-        if (productDb.isPresent()) {
-            Product productUpdate = productDb.get();
-            productUpdate.setId(product.getId());
-            productUpdate.setName(product.getName());
-            productUpdate.setDescription(product.getDescription());
-            productRepository.save(productUpdate);
-            return productUpdate;
-        } else {
-            throw new ResourceNotFoundException("Record not found with id : " + product.getId());
-        }
+        return productRepository.findById(product.getId())
+                .map(p -> {
+                    p.setName(product.getName());
+                    p.setDescription(product.getDescription());
+                    return productRepository.save(p);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Record not found with id : " + product.getId()));
     }
 
     @Override
-    public List<Product> getAllProduct() {
-        return this.productRepository.findAll();
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Override
     public Product getProductById(long productId) {
-
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + productId));
     }
 
     @Override
     public void deleteProduct(long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
-        productRepository.delete(product);
+        productRepository.findById(id)
+                .ifPresentOrElse(
+                        productRepository::delete,
+                        () -> {
+                            throw new ProductNotFoundException("Product not found with id: " + id);
+                        }
+                );
     }
 
 }

@@ -1,71 +1,46 @@
 package com.rathod.h2.controllers;
 
 import com.rathod.h2.entities.Product;
-import com.rathod.h2.exceptions.ProductNotFoundException;
 import com.rathod.h2.services.ProductService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
-/**
- * @author Chirag-scaletech
- */
+
 @RestController
-@Slf4j
+@RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
-    @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProduct() {
-        log.info("Getting all products");
-        log.debug("Getting all products");
-        return ResponseEntity.ok().body(productService.getAllProduct());
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
-//    @GetMapping("/products/{id}")
-//    public ResponseEntity<Product> getProductById(@PathVariable long id) {
-//        try {
-//            Product product = productService.getProductById(id);
-//            return ResponseEntity.ok(product);
-//        } catch (ProductNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        return ResponseEntity.ok().body(this.productService.createProduct(product));
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(product));
     }
 
-    @PutMapping("/products/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable long id, @RequestBody Product product) {
-        product.setId(id);
-        return ResponseEntity.ok().body(this.productService.updateProduct(product));
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) {
+        return ResponseEntity.ok(productService.updateProduct(product));
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        try {
-            productService.deleteProduct(id);
-            return ResponseEntity.ok().build();
-        } catch (ProductNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -3,6 +3,9 @@ package com.rathod.h2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author Chirag
+ */
 @SpringBootApplication
 public class SpringBootWithH2DataBaseApplication {
 

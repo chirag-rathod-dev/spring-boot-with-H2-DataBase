@@ -3,7 +3,7 @@ package com.rathod.h2.exceptions;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * @author Chirag-scaletech
+ * @author Chirag
  */
 @ResponseStatus
 public class ResourceNotFoundException extends RuntimeException {
